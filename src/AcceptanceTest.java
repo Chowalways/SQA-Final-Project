@@ -13,10 +13,10 @@ class AcceptanceTest {
 	FinalProject project;
 	
 	ArrayList<Student> students; // Student class has getters for: <Student name, Grade, Choice 1, Choice 2, Choice 3, isAccepted>
-	ArrayList<School> schools; // this is a hash map!!
+	ArrayList<School> schools;  // School class has getters for : <School name, school acceptance Quota and school minimum grade>
 	
 	@Before
-	void init() {
+	void init() {//initialize variables
 		students = project.getStudents;
 		schools = project.getSchools;
 		assertNotNull(students);
@@ -24,7 +24,7 @@ class AcceptanceTest {
 	}
 
 	@Test
-	void testSchoolQuota() throws NumberFormatException {
+	void testSchoolQuota() throws NumberFormatException {// check the quota of each school
 		for(School school: schools) {
 			assertTrue(school.getQuota > 0);
 			assertTrue(school.getQuota < 200); //Is an upper limit necessary?
@@ -37,7 +37,7 @@ class AcceptanceTest {
 	}
 	
 	@Test
-	void testSchoolReq() {
+	void testSchoolReq() { //test the minimum grade grade required
 		School sc = new School();
 		sc.setRequirement(60.0);
 		assertEquals(sc.getRequirement, 60.0);
@@ -48,14 +48,14 @@ class AcceptanceTest {
 	}
 	
 	@Test
-	void testSchoolIsFull() {
+	void testSchoolIsFull() { //check if school is full
 		School temp = new School();
 		temp.setQuota(0);
 		assertEquals(temp.isFull, true);
 	}
 	
 	@Test
-	void testSchoolHasSpace() {
+	void testSchoolHasSpace() { // check if there is still any space
 		School temp = new School();
 		temp.setQuota(5);
 		
@@ -63,7 +63,7 @@ class AcceptanceTest {
 	}
 	
 	@Test
-	void testStudentGrades() {
+	void testStudentGrades() { // test student grades
 		for(Student student : students) {
 			assertTrue(student.getGrade >= 40.0);
 			assertTrue(student.getGrade <= 100.0);
@@ -75,7 +75,7 @@ class AcceptanceTest {
 	}
 	
 	@Test
-	void testStudentChoices() throws StudentChoicesException{
+	void testStudentChoices() throws StudentChoicesException{ // this is a custom Exception that inherits from Exception class
 		try {
 			for(Student student : students) {
 				assertTrue(student[1] > 1);
@@ -102,6 +102,46 @@ class AcceptanceTest {
 		}
 	}
 	
-	//TODO: implement mockito test case. I totally forgot how to install mockito
+	@Test
+	void doAcceptance() { // test the process of students applying to school and the results
+		ArrayList<School> schools = new ArrayList<School>;
+		ArrayList<Student> students = new ArrayList<Student>;
+		School school = new School();
+		School school2 = new School();
+		School school3 = new School();
+		School school4 = new School();
+		School school5 = new School();
+		Student student = new Student();
+		Student student2 = new Student();
+		Student student3 = new Student();
+		Student student4 = new Student();
+		school.addInfo("FCU", 50, 60.0);
+		school2.addInfo("NCU", 200, 55.0);
+		school3.addInfo("TCU", 1, 60.0);
+		school4.addInfo("NCCU", 150, 70.0);
+		school5.addInfo("TKU", 20, 80.0);
+		student.addInfo("Jack", 86.3, "FCU", "TCU", "NCCU", false);
+		student2.addInfo("Tony", 59.0, "TCU", "NCU", "FCU", false);
+		student3.addInfo("Fred", 0.0, "NCU", "TCU", "NCCU", false);
+		student4.addInfo("Tom", 75.0, "TCU", "TCU", "NCCU", false);
+		schools.add(school);
+		schools.add(school2);
+		schools.add(school3);
+		schools.add(school4);
+		students.add(student);
+		students.add(student2);
+		students.add(student3);
+		students.add(student4);
+		project.calResults(schools, students);
+		assertEquals(project.schoolsApplied, 4);
+		assertEquals(project.studentsAccepted, 3);
+		assertEquals(project.schoolsFull, 1);
+		assertTrue(school3.isFull);
+		assertFalse(school.isFull);
+		assertTrue(student.isAccepted);
+		assertFalse(student3.isAccepted);
+	}
+	
+	//TODO: 
 
 }
