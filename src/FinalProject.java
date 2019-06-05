@@ -1,111 +1,152 @@
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Scanner;
 
 public class FinalProject {
-	private ArrayList<Student> students = new ArrayList<Student>();
-	private ArrayList<School> schools = new ArrayList<School>();
-	private ArrayList<String> Admission = new ArrayList<String>();
 	
-	public FinalProject() {
-		School school = new School();
-		School school2 = new School();
-		School school3 = new School();
-		School school4 = new School();
-		Student student = new Student();
-		Student student2 = new Student();
-		Student student3 = new Student();
-		Student student4 = new Student();
-		school.addInfo("FCU", 50, 60.0);
-		school2.addInfo("NCU", 199, 60.0);
-		school3.addInfo("TCU", 1, 60.0);
-		school4.addInfo("NCCU", 150, 70.0);
-		student.addInfo("Jack", 86.3, "FCU", "TCU", "NCCU", false);
-		student2.addInfo("Tony", 59.0, "TCU", "NCU", "FCU", false);
-		student3.addInfo("Fred", 50.0, "NCU", "TCU", "NCCU", false);
-		student4.addInfo("Tom", 75.0, "TCU", "TCU", "NCCU", false);
-		schools.add(school);
-		schools.add(school2);
-		schools.add(school3);
-		schools.add(school4);
-		students.add(student);
-		students.add(student2);
-		students.add(student3);
-		students.add(student4);
+	
+	
+	public static void main(String[] args) {
+		
+		Student students[] = new Student[50];
+		School schools[] = new School[20];
+		ArrayList<String> Admission = new ArrayList<String>();
+		
+		FinalProject proj = new FinalProject();
+		
+		try {
+			students = proj.getStudents();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		try {
+			schools = proj.getSchools();
+		} catch (IOException | InvalidRequirementException e) {
+			e.printStackTrace();
+		}
+		
+		proj.sortStudents(students);
+		for(Student std: students) {
+			System.out.println(std.getName() + " " + std.getGrade());
+		}
 	}
 	
-	public ArrayList<Student> getStudents(){
+	public Student[] getStudents() throws IOException{
+		File file = new File("studentData1.txt");
+		Scanner input = new Scanner(file);
+		Student students[] = new Student[50];
+		
+		int i = 0;
+		while(input.hasNext()) {
+			
+			Student std = new Student();
+			String name = input.next();
+			Double grade = Double.valueOf(input.next());
+			String choice1 = input.next();
+			String choice2 = input.next();
+			String choice3 = input.next();
+			
+			std.setName(name);
+			try {
+				std.setGrade(grade);
+			} catch (InvalidGradeException e) {
+				
+				e.printStackTrace();
+			}
+			std.setChoice1(choice1);
+			std.setChoice2(choice2);
+			std.setChoice3(choice3);
+			std.setEnrolledStatus(false);
+			
+			students[i++] = std;
+		}
+		
+		input.close();
+		
 		return students;
 	}
 	
-	public ArrayList<School> getSchools(){
+	public School[] getSchools() throws IOException, InvalidRequirementException{
+		File file = new File("schoolData.txt");
+		Scanner input = new Scanner(file);
+		School schools[] = new School[20];
+		
+		int i = 0;
+		while(input.hasNext()) {
+			
+			School sch = new School();
+			String name = input.next();
+			int quota = Integer.valueOf(input.next());
+			Double req = Double.valueOf(input.next());
+			
+			sch.setName(name);
+			sch.setQuota(quota);
+			sch.setRequirement(req);
+			
+			schools[i++] = sch;
+		}
+		
+		input.close();
+		
 		return schools;
 	}
 	
-	public void enroll(School school, Student student) {
-		student.setStatus(true);
-		school.setQuota(school.getQuota()-1);
-		if(school.isFull()) {
-			school.setRequirement(student.getGrade());
-		}
-		Admission.add(school.getName() + ": " + student.getName());
-	}
-	
-	public void calResults(ArrayList<School> sc, ArrayList<Student> st) {
-		students = st;
-		schools = sc;
-		Collections.sort(students);
+	public void sortStudents(Student[] students) {
 		
-		//Calculate Result
-		for(Student student : students) {
-			for(School school : schools) {
-				if(!student.isAccepted() && student.getChoice1().equals(school.getName()) && student.getGrade()>=school.getRequirement() && school.getQuota()>-2) {
-					enroll(school, student);
-				}
-			}
-			for(School school : schools) {
-				if(!student.isAccepted() && student.getChoice2().equals(school.getName()) && student.getGrade()>=school.getRequirement() && school.getQuota()>-2) {
-					enroll(school, student);
-				}
-			}
-			for(School school : schools) {
-				if(!student.isAccepted() && student.getChoice3().equals(school.getName()) && student.getGrade()>=school.getRequirement() && school.getQuota()>-2) {
-					enroll(school, student);
+		for(int i = 0; i < students.length; i++) {
+			Student temp;
+			for(int j = i; j < students.length; j++) {
+				if(students[i].getGrade() < students[j].getGrade()) {
+					temp = students[i];
+					students[i] = students[j];
+					students[j] = temp;
 				}
 			}
 		}
+	}
+	
+	public void doEnrollment(School[] sch, Student[] std) {
 		
-		//Print Result
-		Collections.sort(Admission);
-		for(String str : Admission) {
-			System.out.println(str);
-		}
-	}
-	
-	public int schoolsApplied() {
-		return schools.size();
-	}
-	
-	public int studentsApplied() {
-		return students.size();
-	}
-	
-	public int studentsAccepted() {
-		int accepted = 0;
-		for(Student student : students) {
-			if(student.getStatus()) {
-				accepted += 1;
+		for(int i = 0; i < 3; i++) {	
+			for(School school: sch ) {
+				for(Student student: std) {
+					if(i == 0) {//For choice 1
+						String choice = student.getChoice1();
+						double grade = student.getGrade();
+						if(!student.getEnrolledStatus() && grade >= school.getRequirement()) {
+							if(school.getName() == choice && (school.isFull() == false)) {
+								student.setEnrolledStatus(true);
+								school.updateEnrolled();
+							}
+						}
+					}
+					
+					if(i == 1) {//For choice 2
+						String choice = student.getChoice2();
+						double grade = student.getGrade();
+						if(!student.getEnrolledStatus() && grade >= school.getRequirement()) {
+							if(school.getName() == choice && (school.isFull() == false)) {
+								student.setEnrolledStatus(true);
+								school.updateEnrolled();
+							}
+						}
+					}
+					
+					if(i == 2) { //For choice 3
+						String choice = student.getChoice3();
+						double grade = student.getGrade();
+						if(!student.getEnrolledStatus() && grade >= school.getRequirement()) {
+							if(school.getName() == choice && (school.isFull() == false)) {
+								student.setEnrolledStatus(true);
+								school.updateEnrolled();
+							}
+						}
+					}
+				}
 			}
+			
 		}
-		return accepted;
-	}
-	
-	public int schoolsFull() {
-		int full = 0;
-		for(School school : schools) {
-			if(school.isFull()) {
-				full += 1;
-			}
-		}
-		return full;
 	}
 }

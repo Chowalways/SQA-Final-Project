@@ -3,23 +3,29 @@ public class School {
 	private String name;
 	private int quota;
 	private double requirement;
+	private boolean isFull = false;
+	private int enrolled = 0;
 	
-	public School() {
-		name = "N/A";
-		quota = 0;
-		requirement = 100;
-	}
 	
 	//setter
-	public void setName(String n) {
-		name = n;
+	public void setName(String name) {
+		this.name = name;
 	}
 	public void setQuota(int q) {
-		quota = q;
+		this.quota = q;
 	}
-	public void setRequirement(double r) {
-		requirement = r;
+	public void setRequirement(double r) throws InvalidRequirementException{
+		if(r < 55.0 || r > 100.0)
+			throw new InvalidRequirementException(" Not a valid Value");
+		else
+			this.requirement = r;
 	}
+	
+	public void updateEnrolled() {
+		this.enrolled+= 1;
+	}
+	
+
 	
 	//getter
 	public String getName() {
@@ -33,16 +39,10 @@ public class School {
 	}
 	
 	public boolean isFull() {
-		if(quota<=0)
+		if(quota == enrolled)
 			return true;
 		else
 			return false;
-	}
-	
-	public void addInfo(String n, int q, double r) {
-		name = n;
-		quota = q;
-		requirement = r;
 	}
 	
 }
