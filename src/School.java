@@ -1,53 +1,48 @@
 
 public class School {
 	private String name;
-	private int quota = 0;
-	private int quotaAdded = 0;
-	private int lowScore = 999;
-	private String[] enrollList = new String[99];
-	private int enrollNumber = 0;
+	private int quota;
+	private double requirement;
 	
-	public School(String n, int q) {
+	public School() {
+		name = "N/A";
+		quota = 0;
+		requirement = 100;
+	}
+	
+	//setter
+	public void setName(String n) {
 		name = n;
+	}
+	public void setQuota(int q) {
 		quota = q;
+	}
+	public void setRequirement(double r) {
+		requirement = r;
+	}
+	
+	//getter
+	public String getName() {
+		return name;
+	}
+	public int getQuota() {
+		return quota;
+	}
+	public double getRequirement() {
+		return requirement;
 	}
 	
 	public boolean isFull() {
-		if(enrollNumber>=quota)
+		if(quota<=0)
 			return true;
 		else
 			return false;
 	}
 	
-	public String getName() {
-		return name;
+	public void addInfo(String n, int q, double r) {
+		name = n;
+		quota = q;
+		requirement = r;
 	}
 	
-	public boolean enroll(String name, int score) {
-		if(isFull()) {
-			if(score==lowScore && quotaAdded<2) {
-				enrollList[enrollNumber] = name + " " + Integer.toString(score);
-				quotaAdded += 1;
-				enrollNumber +=1;
-				return true;
-			}else {
-				return false;
-			}
-		}else {
-			enrollList[enrollNumber] = name + " " + Integer.toString(score);
-			lowScore = score;
-			enrollNumber +=1;
-			return true;
-		}
-	}
-	
-	public void printList() {
-		System.out.println(name + "的錄取名單:");
-		for(int i=0; i<enrollNumber; i++) {
-			System.out.println(enrollList[i]);
-		}
-		System.out.printf("錄取率: %1.1f%%  缺額率: %1.1f%%\n\n", 
-				(double)enrollNumber/(double)quota*100, 100-(double)enrollNumber/(double)quota*100);
-	}
-
 }
