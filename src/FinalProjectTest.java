@@ -1,5 +1,5 @@
 import static org.junit.jupiter.api.Assertions.*;
-
+import static org.mockito.Mockito.*;
 import java.io.IOException;
 
 import org.junit.Before;
@@ -11,15 +11,18 @@ class FinalProjectTest {
 	FinalProject proj = new FinalProject();
 	Student[] students = new Student[50];
 	School[] schools = new School[20];
+	FinalProject toMock;
 	
 	@Before
-	void init() {
+	public void init() {
 		//proj = new FinalProject();
+		
 	}
 	
 	
 	@Test
-	void testGetStudents() {
+	void testGetStudents() throws InvalidGradeException {
+		toMock = mock(FinalProject.class);
 		try{
 			students = proj.getStudents();
 		}catch(IOException e) {
@@ -27,6 +30,37 @@ class FinalProjectTest {
 		}
 		assertNotNull(students);
 		assertEquals(50, students.length);
+		Student std1 = new Student();
+		std1.setName("john");
+		std1.setGrade(80.0);
+		std1.setChoice1("FCU");
+		std1.setChoice2("BHS");
+		std1.setChoice3("WAHS");
+		Student std2 = new Student();
+		std2.setName("Jack");
+		std2.setGrade(60.0);
+		std2.setChoice1("NTPU");
+		std2.setChoice2("FCU");
+		std2.setChoice3("NTU");
+		Student std3 = new Student();
+		std3.setName("Sammy");
+		std3.setGrade(65.0);
+		std3.setChoice1("KKU");
+		std3.setChoice2("NTSU");
+		std3.setChoice3("FLU");
+		
+		Student[] students = new Student[3];
+		students[0] = std1;
+		students[1] = std2;
+		students[2] = std3;
+		try {
+			when(toMock.getStudents()).thenReturn(students);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		assertEquals(students[0].getChoice1(), "FCU");
+		assertTrue(students[2].getGrade() > 50.0);
 	}
 
 	@Test
