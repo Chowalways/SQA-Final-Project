@@ -1,11 +1,18 @@
-import static org.junit.jupiter.api.Assertions.*;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.mockito.Mockito.*;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import org.junit.Before;
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
-class FinalProjectTest {
+
+public class FinalProjectTest {
 
 	
 	FinalProject proj = new FinalProject();
@@ -21,7 +28,7 @@ class FinalProjectTest {
 	
 	
 	@Test
-	void testGetStudents() throws InvalidGradeException {
+	public void testGetStudents() throws InvalidGradeException {
 		toMock = mock(FinalProject.class);
 		try{
 			students = proj.getStudents();
@@ -64,7 +71,7 @@ class FinalProjectTest {
 	}
 
 	@Test
-	void testGetSchools() {
+	public void testGetSchools() {
 		try{
 			schools = proj.getSchools();
 		}catch(IOException | InvalidRequirementException e) {
@@ -75,7 +82,7 @@ class FinalProjectTest {
 	}
 	
 	@Test
-	void testSchoolQuota() {
+	public void testSchoolQuota() {
 		try{
 			schools = proj.getSchools();
 		}catch(IOException | InvalidRequirementException e) {
@@ -88,8 +95,8 @@ class FinalProjectTest {
 		
 	}
 	
-	@Test
-	void testSchoolReq() { //test the minimum grade grade required
+	@Test(expected = InvalidRequirementException.class)
+	public void testSchoolReq() throws InvalidRequirementException { //test the minimum grade grade required
 		try{
 			schools = proj.getSchools();
 		}catch(IOException | InvalidRequirementException e) {
@@ -97,14 +104,12 @@ class FinalProjectTest {
 		}
 		for(School school: schools) {
 			assertTrue(school.getRequirement() >= 50.0 && school.getRequirement() < 100.0);
-			assertThrows(InvalidRequirementException.class, ()-> {
-				school.setRequirement(40.0);
-			});
+			school.setRequirement(40.0);
 		}
 	}
 	
 	@Test
-	void testSchoolIsFull() {
+	public void testSchoolIsFull() {
 		try{
 			schools = proj.getSchools();
 		}catch(IOException | InvalidRequirementException e) {
@@ -117,28 +122,49 @@ class FinalProjectTest {
 		assertTrue(schools[1].isFull());
 	}
 	
-	@Test
-	void testStudentGrade() { 
+	@Test(expected = InvalidGradeException.class)
+	public void testStudentGrade() throws InvalidGradeException { 
 		try{
 			students = proj.getStudents();
 		}catch(IOException e) {
 			e.printStackTrace();
 		}
 		for(Student std: students) {
-			assertThrows(InvalidGradeException.class, ()-> {
+			
 				std.setGrade(150.0);
-			});
+		
 		}
 	}
 
 	@Test
-	void testSortStudents() {
-		fail("Not yet implemented");
-	}
+	public void testDoEnrollment() throws InvalidRequirementException, InvalidGradeException {
+		School[] schools = new School[1];
+		Student[] students = new Student[1];
+		
+		
+		Student std1 = new Student();
+		std1.setName("john");
+		std1.setGrade(80.0);
+		std1.setChoice1("FCU");
+		std1.setChoice2("BHS");
+		std1.setChoice3("WAHS");
+		
+		School sch1 = new School();
+		sch1.setName("FCU");
+		sch1.setQuota(2);
+		sch1.setRequirement(60);
+	
+		students[0] = std1;
+		schools[0] = sch1;
+		
 
-	@Test
-	void testDoEnrollment() {
-		fail("Not yet implemented");
+		proj.doEnrollment(schools, students);
+		for(School sch: schools) {
+			assertFalse(sch.getEnrolledStudents().isEmpty());
+		}
+		
+		ArrayList<Student> stud = schools[0].getEnrolledStudents(); 
+		assertTrue(stud.size() == 1);
 	}
 
 }

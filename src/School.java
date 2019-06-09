@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 
 public class School {
 	private String name;
@@ -5,6 +6,7 @@ public class School {
 	private double requirement;
 	private boolean isFull = false;
 	private int enrolled = 0;
+	private ArrayList<Student> enrolledStudents = new ArrayList<Student>();
 	
 	
 	//setter
@@ -25,6 +27,9 @@ public class School {
 		this.enrolled+= 1;
 	}
 	
+	public void updateEnrolledStudents(Student student) {
+		this.enrolledStudents.add(student);
+	}
 
 	
 	//getter
@@ -43,6 +48,10 @@ public class School {
 			return true;
 		else
 			return false;
+	}
+	
+	public ArrayList<Student> getEnrolledStudents(){
+		return enrolledStudents;
 	}
 	
 }

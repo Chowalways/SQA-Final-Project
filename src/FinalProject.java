@@ -28,9 +28,8 @@ public class FinalProject {
 		}
 		
 		proj.sortStudents(students);
-		for(Student std: students) {
-			System.out.println(std.getName() + " " + std.getGrade());
-		}
+		proj.doEnrollment(schools, students);
+
 	}
 	
 	public Student[] getStudents() throws IOException{
@@ -115,10 +114,12 @@ public class FinalProject {
 					if(i == 0) {//For choice 1
 						String choice = student.getChoice1();
 						double grade = student.getGrade();
-						if(!student.getEnrolledStatus() && grade >= school.getRequirement()) {
-							if(school.getName() == choice && (school.isFull() == false)) {
+						if((student.getEnrolledStatus() == false) && grade >= school.getRequirement()) {
+							if(school.getName().equals(choice) && (school.isFull() == false)) {
 								student.setEnrolledStatus(true);
 								school.updateEnrolled();
+								school.updateEnrolledStudents(student);
+								
 							}
 						}
 					}
@@ -126,10 +127,12 @@ public class FinalProject {
 					if(i == 1) {//For choice 2
 						String choice = student.getChoice2();
 						double grade = student.getGrade();
-						if(!student.getEnrolledStatus() && grade >= school.getRequirement()) {
+						if((student.getEnrolledStatus() == false) && grade >= school.getRequirement()) {
 							if(school.getName() == choice && (school.isFull() == false)) {
 								student.setEnrolledStatus(true);
 								school.updateEnrolled();
+								school.updateEnrolledStudents(student);
+								System.out.println("adding 2");
 							}
 						}
 					}
@@ -137,10 +140,12 @@ public class FinalProject {
 					if(i == 2) { //For choice 3
 						String choice = student.getChoice3();
 						double grade = student.getGrade();
-						if(!student.getEnrolledStatus() && grade >= school.getRequirement()) {
+						if((student.getEnrolledStatus() == false) && grade >= school.getRequirement()) {
 							if(school.getName() == choice && (school.isFull() == false)) {
 								student.setEnrolledStatus(true);
 								school.updateEnrolled();
+								school.updateEnrolledStudents(student);
+								System.out.println("adding 3");
 							}
 						}
 					}
@@ -149,4 +154,6 @@ public class FinalProject {
 			
 		}
 	}
+	
+	
 }
