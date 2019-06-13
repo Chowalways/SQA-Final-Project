@@ -128,7 +128,7 @@ public class FinalProject {
 						String choice = student.getChoice2();
 						double grade = student.getGrade();
 						if((student.getEnrolledStatus() == false) && grade >= school.getRequirement()) {
-							if(school.getName() == choice && (school.isFull() == false)) {
+							if(school.getName().equals(choice) && (school.isFull() == false)) {
 								student.setEnrolledStatus(true);
 								school.updateEnrolled();
 								school.updateEnrolledStudents(student);
@@ -141,7 +141,7 @@ public class FinalProject {
 						String choice = student.getChoice3();
 						double grade = student.getGrade();
 						if((student.getEnrolledStatus() == false) && grade >= school.getRequirement()) {
-							if(school.getName() == choice && (school.isFull() == false)) {
+							if(school.getName().equals(choice) && (school.isFull() == false)) {
 								student.setEnrolledStatus(true);
 								school.updateEnrolled();
 								school.updateEnrolledStudents(student);
