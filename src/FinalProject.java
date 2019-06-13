@@ -29,6 +29,14 @@ public class FinalProject {
 		
 		proj.sortStudents(students);
 		proj.doEnrollment(schools, students);
+		
+		//To test if new enrollment status works
+		for(int i = 0; i < schools.length; i++) {
+			ArrayList<Student> stud = schools[i].getEnrolledStudents(); 
+			for(Student std: stud) {
+				System.out.println(std.getName());
+			}
+		}
 
 	}
 	
@@ -108,50 +116,66 @@ public class FinalProject {
 	
 	public void doEnrollment(School[] sch, Student[] std) {
 		
-		for(int i = 0; i < 3; i++) {	
-			for(School school: sch ) {
-				for(Student student: std) {
-					if(i == 0) {//For choice 1
-						String choice = student.getChoice1();
-						double grade = student.getGrade();
-						if((student.getEnrolledStatus() == false) && grade >= school.getRequirement()) {
-							if(school.getName().equals(choice) && (school.isFull() == false)) {
-								student.setEnrolledStatus(true);
-								school.updateEnrolled();
-								school.updateEnrolledStudents(student);
-								
-							}
-						}
-					}
+		/*
+		 * MY LOGIC
+		 * 
+		 * for student in students
+		 *  	for choice in choices
+		 *  		if student is enrolled break out of for loop
+		 *  		if need to go to next choice break out of loop
+		 *  		for school in schools
+		 *  			do switch case on student choice from choice one to choice three
+		 *  			if all requirements ok then add student to school and update info
+		 *  			if all requirements ok but the school is full break out of this for loop and say we need to go to next choice
+		 * */
+
+		for(Student student: std) {
+
+			for(int i = 0; i < 3; i++) {
+				boolean goToNextChoice = false;
+				double grade = student.getGrade();
+				if(student.getEnrolledStatus() == true)
+					break;
+				for(School school: sch) {
+					if(goToNextChoice)
+						break;
+					if(student.getEnrolledStatus() == true)
+						break;
 					
-					if(i == 1) {//For choice 2
-						String choice = student.getChoice2();
-						double grade = student.getGrade();
-						if((student.getEnrolledStatus() == false) && grade >= school.getRequirement()) {
-							if(school.getName().equals(choice) && (school.isFull() == false)) {
-								student.setEnrolledStatus(true);
-								school.updateEnrolled();
-								school.updateEnrolledStudents(student);
-								System.out.println("adding 2");
-							}
+					switch(i) {
+					case 0:
+						if(grade >= school.getRequirement() && school.getName().equals(student.getChoice1()) && school.isFull() == false) {
+							student.setEnrolledStatus(true);
+							school.updateEnrolled();
+							school.updateEnrolledStudents(student);
+						}else if(grade >= school.getRequirement() && school.getName().equals(student.getChoice1()) && school.isFull() == true){
+							goToNextChoice = true;
 						}
-					}
-					
-					if(i == 2) { //For choice 3
-						String choice = student.getChoice3();
-						double grade = student.getGrade();
-						if((student.getEnrolledStatus() == false) && grade >= school.getRequirement()) {
-							if(school.getName().equals(choice) && (school.isFull() == false)) {
-								student.setEnrolledStatus(true);
-								school.updateEnrolled();
-								school.updateEnrolledStudents(student);
-								System.out.println("adding 3");
-							}
+					break;
+					case 1:
+						if(grade >= school.getRequirement() && school.getName().equals(student.getChoice2()) && school.isFull() == false) {
+							student.setEnrolledStatus(true);
+							school.updateEnrolled();
+							school.updateEnrolledStudents(student);
+						}else if(grade >= school.getRequirement() && school.getName().equals(student.getChoice2()) && school.isFull() == true){
+							goToNextChoice = true;
 						}
+					break;
+					case 2:
+						if(grade >= school.getRequirement() && school.getName().equals(student.getChoice3()) && school.isFull() == false) {
+							student.setEnrolledStatus(true);
+							school.updateEnrolled();
+							school.updateEnrolledStudents(student);
+						}else if(grade >= school.getRequirement() && school.getName().equals(student.getChoice3()) && school.isFull() == true){
+							goToNextChoice = true;
+						}
+					break;
+					default:
+						break;
+						
 					}
 				}
 			}
-			
 		}
 	}
 	
